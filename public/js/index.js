@@ -137,6 +137,7 @@ const displayGraph = config => {
 	$(canvas).attr('id', 'chartjs-canvas');
 	$(canvas).appendTo($('#chartjs-canvas-container'));
 	currentGraph = new Chart($('#chartjs-canvas'), config);
+	scroll({ top: 0 });
 	$('#chartjs-canvas-container').show();
 };
 
@@ -151,6 +152,14 @@ const getArtistGraph = async artistId => {
 			.then(res => processFetchResponse(res))
 			.then(res => {
 				const json = res.data;
+
+				fetch(`/spotify/artists/${json[0].artist_name}`)
+				.then(res2 => processFetchResponse(res2))
+				.then(spotify => {
+					$('#artist-image').html(`<img src="${spotify.image}">`);
+				})
+				.catch(err => console.error(err));
+
 				$('#title').html(`${heartIcon('a', json[0].artist_id, res.isFavorite)} ${json[0].artist_name}: Chart Performance`);
 				const subtitle = (json.length === 1 ? '' : `<div class="bold"><a class="bold" 
 				href="javascript:getMultiSongGraph('${json[0].artist_id}');">View weekly performance for all songs by 
@@ -312,6 +321,7 @@ const getMultiSongGraph = async artistId => {
 const getTop100 = async chartDate => {
 	return new Promise((resolve, reject) => {
 		try {
+			scroll({ top: 0 });
 			clearTitles();
 			currentGraphFunction = null;
 			currentGraphArg = null;
