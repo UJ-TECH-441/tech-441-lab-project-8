@@ -1,0 +1,235 @@
+@font-face {
+  font-family: "Rubik";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/rubik/v28/iJWKBXyIfDnIV7nBrXw.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Rubik";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/rubik/v28/iJWKBXyIfDnIV7nBrXw.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Rubik";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/rubik/v28/iJWKBXyIfDnIV7nBrXw.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+*, select {
+  font: 400 16px Rubik, sans-serif;
+}
+
+a {
+  cursor: pointer;
+}
+
+a, a:hover, a:active, a:visited {
+  color: #1880e7;
+  text-decoration: none;
+}
+
+select {
+  margin: 0 10px;
+}
+
+button {
+  background-color: #1880e7;
+  border-color: #1880e7;
+  color: white;
+  padding: 0.2rem 0.6rem;
+  text-align: center;
+}
+
+.bold, .bold a {
+  font-weight: 600;
+}
+
+.black, .black a {
+  font-weight: 700;
+}
+
+.title, .title > * {
+  font-weight: 600;
+  font-size: 1.5rem;
+  color: #1880e7;
+}
+
+.title {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.title a {
+  text-decoration: underline;
+}
+
+.title select, .title option {
+  font-size: 1.3rem;
+}
+
+.subtitle {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.subtitle > div, .subtitle > select {
+  margin-top: 10px;
+}
+
+.error {
+  color: #df0000;
+}
+
+body {
+  display: none;
+}
+
+main {
+  font-weight: 400;
+}
+
+main > div {
+  margin: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  font-weight: 400;
+}
+
+header {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 20px;
+}
+header > div {
+  flex: 1;
+  display: inline-block;
+}
+header #title-container {
+  margin: auto;
+  flex: 2;
+}
+
+#user-container {
+  text-align: right;
+  cursor: pointer;
+}
+#user-container .fa-user {
+  color: #1880e7;
+  font-size: 1.2rem;
+}
+#user-container .fa-chevron-down {
+  vertical-align: center;
+  font-size: 0.8rem;
+}
+
+#user-menu {
+  position: relative;
+  display: inline-block;
+  width: 100px;
+  white-space: nowrap;
+}
+#user-menu > i {
+  vertical-align: middle;
+}
+#user-menu > div {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  width: 100px;
+  margin-top: 0;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  text-align: left;
+}
+#user-menu > div > a {
+  padding: 12px 16px;
+  display: block;
+}
+#user-menu > div > a:hover {
+  text-decoration: underline;
+}
+#user-menu > div:hover {
+  display: block;
+}
+#user-menu:hover > div {
+  display: block;
+}
+
+#user-name {
+  font-size: 0.85rem;
+  color: #1880e7;
+}
+
+#content-container {
+  display: none;
+}
+
+#chartjs-canvas-container {
+  display: none;
+  position: relative;
+  width: 98vw;
+}
+
+#chartjs-canvas-container > span {
+  text-align: center;
+}
+
+#chartjs-canvas {
+  position: relative;
+  width: 98vw;
+  height: 40vh;
+}
+
+.heart {
+  font-size: 0.7rem;
+  color: #aaa;
+  vertical-align: middle;
+}
+.heart:hover {
+  cursor: pointer;
+}
+
+.heart-large {
+  font-size: 1rem;
+}
+
+.heart-filled {
+  color: #ff7575;
+}
+
+footer {
+  display: none;
+}
+footer #footer-menus {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-top: dashed 1px #ccc;
+  margin: 20px 0;
+  padding: 20px 0;
+}
+footer > div > div {
+  margin: 0 5px;
+}
+
+/*# sourceMappingURL=data:application/json;charset=utf-8,%7B%22version%22:3,%22sourceRoot%22:%22%22,%22sources%22:%5B%22fonts.scss%22,%22main.scss%22,%22constants.scss%22,%22index.scss%22%5D,%22names%22:%5B%5D,%22mappings%22:%22AAAA;EACC;EACA;EACA;EACA;EACA;EACA;;AAGD;EACC;EACA;EACA;EACA;EACA;EACA;;AAGD;EACC;EACA;EACA;EACA;EACA;EACA;;ACpBD;EACC;;;AAGD;EACC;;;AAGD;EACC;;;AAGD;EACC;;;AAGD;EACC,OCrBY;EDsBZ;;;AAGD;EACC;;;AAGD;EACC,kBC9BY;ED+BZ,cC/BY;EDgCZ;EACA;EACA;;;AAGD;EACC,aC5BkB;;;AD+BnB;EACC,aC/BmB;;;ADkCpB;EACC,aCpCkB;EDqClB;EACA,OChDY;;;ADmDb;EACC;EACA;;;AAGD;EACC;;;AAGD;EACC;;;AAGD;EACC;EACA;;;AAGD;EACC;;;AAGD;EACC,OCpEW;;;ACFZ;EACC;;;AAGD;EACC;;;AAGD;EACC;EACA;EACA;EACA;EACA;EACA,aDToB;;;ACYrB;EACC;EACA;EACA;EACA;EACA;;AAEA;EACC;EACA;;AAGD;EACC;EACA;;;AAIF;EACC;EACA;;AAEA;EACC;EACA;;AAED;EACC;EACA;;;AAIF;EACC;EACA;EACA;EACA;;AAEA;EACC;;AAGD;EACC;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;AAEA;EACC;EACA;;AACA;EACC;;AAGF;EACE;;AAGH;EACC;;;AAIF;EACC;EACA,OD3FY;;;AC8Fb;EACC;;;AAGD;EACC;EACA;EACA;;;AAGD;EACC;;;AAGD;EACC;EACA;EACA;;;AAGD;EACC;EACA;EACA;;AAEA;EACC;;;AAIF;EACC;;;AAGD;EACC,OD1HiB;;;AC6HlB;EACC;;AAEA;EACC;EACA;EACA;EACA;EACA;EACA;EACA;;AAGD;EACC%22,%22file%22:%22index.css%22%7D */

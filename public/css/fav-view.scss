@@ -1,0 +1,30 @@
+@use "sass:color";
+@import "constants";
+
+#favorites {
+	max-width: 60%;
+	margin: auto;
+
+	> div {
+		padding: 30px;
+		margin-bottom: 20px;
+		background-color: color.adjust($color-lavender, $lightness: 10%, $saturation: -50%);
+		border: 5px solid $color-lavender;
+		border-radius: 20px;
+
+		> div:first-child {
+			font-weight: $font-weight-bold;
+			font-size: 1.2rem;
+			margin-bottom: .5rem;
+		}
+
+		span, a {
+			font-weight: $font-weight-bold;
+			white-space: nowrap;
+		}
+
+		span {
+			margin-right: .7rem;
+		}
+	}
+}

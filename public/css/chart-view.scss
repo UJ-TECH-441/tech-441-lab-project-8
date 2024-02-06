@@ -1,0 +1,54 @@
+@use "sass:color";
+@import "constants";
+
+td {
+	white-space: nowrap;
+}
+
+#chart-table {
+	margin: auto;
+	border-spacing: 0;
+	border-collapse: separate;
+	margin-bottom: 20px;
+
+	> tbody > tr {
+		&:first-child td {
+			font-weight: $font-weight-bold;
+			background-color: #dedede;
+		}
+
+		> td {
+			padding: .2rem .7rem;
+			border-bottom: solid 1px #ccc;
+
+			&:first-child {
+				font-weight: $font-weight-black;
+				text-align: right;
+			}
+
+			a {
+				font-weight: $font-weight-bold;
+			}
+		}
+	}
+}
+
+.top-40 {
+	background-color: #f3f9fe;
+}
+
+.change-new {
+	color: $color-blue-dark;
+}
+
+.change-up {
+	color: $color-green;
+}
+
+.change-down {
+	color: $color-red;
+}
+
+.change-none {
+	color: $color-gray-dark;
+}

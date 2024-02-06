@@ -1,0 +1,117 @@
+@font-face {
+  font-family: "Rubik";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/rubik/v28/iJWKBXyIfDnIV7nBrXw.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Rubik";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/rubik/v28/iJWKBXyIfDnIV7nBrXw.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Rubik";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/rubik/v28/iJWKBXyIfDnIV7nBrXw.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+*, select {
+  font: 400 16px Rubik, sans-serif;
+}
+
+a {
+  cursor: pointer;
+}
+
+a, a:hover, a:active, a:visited {
+  color: #1880e7;
+  text-decoration: none;
+}
+
+select {
+  margin: 0 10px;
+}
+
+button {
+  background-color: #1880e7;
+  border-color: #1880e7;
+  color: white;
+  padding: 0.2rem 0.6rem;
+  text-align: center;
+}
+
+.bold, .bold a {
+  font-weight: 600;
+}
+
+.black, .black a {
+  font-weight: 700;
+}
+
+.title, .title > * {
+  font-weight: 600;
+  font-size: 1.5rem;
+  color: #1880e7;
+}
+
+.title {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.title a {
+  text-decoration: underline;
+}
+
+.title select, .title option {
+  font-size: 1.3rem;
+}
+
+.subtitle {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.subtitle > div, .subtitle > select {
+  margin-top: 10px;
+}
+
+.error {
+  color: #df0000;
+}
+
+header {
+  margin-top: 20px;
+}
+
+#login-form {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+#login-form > table > tbody > tr > td {
+  font-weight: 500;
+  padding: 0.3rem;
+}
+#login-form input {
+  width: 10rem;
+}
+
+/*# sourceMappingURL=data:application/json;charset=utf-8,%7B%22version%22:3,%22sourceRoot%22:%22%22,%22sources%22:%5B%22fonts.scss%22,%22main.scss%22,%22constants.scss%22,%22login.scss%22%5D,%22names%22:%5B%5D,%22mappings%22:%22AAAA;EACC;EACA;EACA;EACA;EACA;EACA;;AAGD;EACC;EACA;EACA;EACA;EACA;EACA;;AAGD;EACC;EACA;EACA;EACA;EACA;EACA;;ACpBD;EACC;;;AAGD;EACC;;;AAGD;EACC;;;AAGD;EACC;;;AAGD;EACC,OCrBY;EDsBZ;;;AAGD;EACC;;;AAGD;EACC,kBC9BY;ED+BZ,cC/BY;EDgCZ;EACA;EACA;;;AAGD;EACC,aC5BkB;;;AD+BnB;EACC,aC/BmB;;;ADkCpB;EACC,aCpCkB;EDqClB;EACA,OChDY;;;ADmDb;EACC;EACA;;;AAGD;EACC;;;AAGD;EACC;;;AAGD;EACC;EACA;;;AAGD;EACC;;;AAGD;EACC,OCpEW;;;ACFZ;EACC;;;AAGD;EACC;EACA;EACA;EACA;EACA;;AAEA;EACC;EACA;;AAGD;EACC%22,%22file%22:%22login.css%22%7D */

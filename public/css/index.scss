@@ -1,0 +1,149 @@
+@use "sass:color";
+@import "constants";
+@import 'main';
+
+body {
+	display: none;
+}
+
+main {
+	font-weight: $font-weight-normal;
+}
+
+main > div {
+	margin: 20px;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	font-weight: $font-weight-normal;
+}
+
+header {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: flex-start;
+	margin-top: 20px;
+
+	> div {
+		flex: 1;
+		display: inline-block;
+	}
+
+	#title-container {
+		margin: auto;
+		flex: 2;
+	}
+}
+
+#user-container {
+	text-align: right;
+	cursor: pointer;
+
+	.fa-user {
+		color: #1880e7;
+		font-size: 1.2rem;
+	}
+	.fa-chevron-down {
+		vertical-align: center;
+		font-size: .8rem;
+	}
+}
+
+#user-menu {
+	position: relative;
+	display: inline-block;
+	width: 100px;
+	white-space: nowrap;
+
+	> i  {
+		vertical-align: middle;
+	}
+
+	> div {
+		display: none;
+		position: absolute;
+		background-color: #f1f1f1;
+		width: 100px;
+		margin-top: 0;
+		box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.2);
+		z-index: 1;
+		text-align: left;
+
+		> a {
+			padding: 12px 16px;
+			display: block;
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+		&:hover {
+			 display: block;
+		}
+	}
+	&:hover > div {
+		display: block;
+	}
+}
+
+#user-name {
+	font-size: .85rem;
+	color: $color-blue;
+}
+
+#content-container {
+	display: none;
+}
+
+#chartjs-canvas-container {
+	display: none;
+	position: relative;
+	width: 98vw;
+}
+
+#chartjs-canvas-container > span {
+	text-align: center;
+}
+
+#chartjs-canvas {
+	position: relative;
+	width: 98vw;
+	height: 40vh;
+}
+
+.heart {
+	font-size: .7rem;
+	color: #aaa;
+	vertical-align: middle;
+
+	&:hover {
+		cursor: pointer;
+	}
+}
+
+.heart-large {
+	font-size: 1rem;
+}
+
+.heart-filled {
+	color: $color-red-light;
+}
+
+footer {
+	display: none;
+
+	#footer-menus {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		border-top: dashed 1px #ccc;
+		margin: 20px 0;
+		padding: 20px 0;
+	}
+
+	> div > div {
+		margin: 0 5px;
+	}
+}

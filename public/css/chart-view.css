@@ -1,0 +1,47 @@
+td {
+  white-space: nowrap;
+}
+
+#chart-table {
+  margin: auto;
+  border-spacing: 0;
+  border-collapse: separate;
+  margin-bottom: 20px;
+}
+#chart-table > tbody > tr:first-child td {
+  font-weight: 600;
+  background-color: #dedede;
+}
+#chart-table > tbody > tr > td {
+  padding: 0.2rem 0.7rem;
+  border-bottom: solid 1px #ccc;
+}
+#chart-table > tbody > tr > td:first-child {
+  font-weight: 700;
+  text-align: right;
+}
+#chart-table > tbody > tr > td a {
+  font-weight: 600;
+}
+
+.top-40 {
+  background-color: #f3f9fe;
+}
+
+.change-new {
+  color: #1469be;
+}
+
+.change-up {
+  color: #009f00;
+}
+
+.change-down {
+  color: #df0000;
+}
+
+.change-none {
+  color: #777;
+}
+
+/*# sourceMappingURL=data:application/json;charset=utf-8,%7B%22version%22:3,%22sourceRoot%22:%22%22,%22sources%22:%5B%22chart-view.scss%22,%22constants.scss%22%5D,%22names%22:%5B%5D,%22mappings%22:%22AAGA;EACC;;;AAGD;EACC;EACA;EACA;EACA;;AAGC;EACC,aCLgB;EDMhB;;AAGD;EACC;EACA;;AAEA;EACC,aCbgB;EDchB;;AAGD;EACC,aCnBe;;;ADyBnB;EACC;;;AAGD;EACC,OCvCiB;;;AD0ClB;EACC,OCxCa;;;AD2Cd;EACC,OC1CW;;;AD6CZ;EACC,OCjDiB%22,%22file%22:%22chart-view.css%22%7D */

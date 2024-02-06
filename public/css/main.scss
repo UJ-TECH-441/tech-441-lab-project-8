@@ -1,0 +1,76 @@
+@use "sass:color";
+@import "constants";
+@import "fonts";
+
+html {
+	box-sizing: border-box;
+}
+
+*, *:before, *:after {
+	box-sizing: inherit;
+}
+
+*, select {
+	font: $font-weight-normal 16px Rubik, sans-serif;
+}
+
+a {
+	cursor: pointer;
+}
+
+a, a:hover, a:active, a:visited {
+	color: $color-blue;
+	text-decoration: none;
+}
+
+select {
+	margin: 0 10px;
+}
+
+button {
+	background-color: $color-blue;
+	border-color: $color-blue;
+	color: white;
+	padding: .2rem .6rem;
+	text-align: center;
+}
+
+.bold, .bold a {
+	font-weight: $font-weight-bold;
+}
+
+.black, .black a {
+	font-weight: $font-weight-black;
+}
+
+.title, .title > * {
+	font-weight: $font-weight-bold;
+	font-size: 1.5rem;
+	color: $color-blue;
+}
+
+.title {
+	text-align: center;
+	white-space: nowrap;
+}
+
+.title a {
+	text-decoration: underline;
+}
+
+.title select, .title option {
+	font-size: 1.3rem;
+}
+
+.subtitle {
+	margin-top: 10px;
+	text-align: center;
+}
+
+.subtitle > div, .subtitle > select {
+	margin-top: 10px;
+}
+
+.error {
+	color: $color-red;
+}

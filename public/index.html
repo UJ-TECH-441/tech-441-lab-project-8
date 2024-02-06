@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="">
+<head>
+	<title>Music Chart Machine</title>
+<!--	<link rel="preconnect" href="//fonts.googleapis.com">-->
+<!--	<link rel="preconnect" href="//fonts.gstatic.com" crossorigin>-->
+<!--	<link rel="preload" as="style" href="//fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap">-->
+	<link href="/css/index.css" rel="stylesheet">
+	<link href="/css/chart-view.css" rel="stylesheet">
+	<link href="/css/fav-view.css" rel="stylesheet">
+	<script src="//code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+	<script src="//kit.fontawesome.com/3d786f588f.js" crossorigin="anonymous"></script>
+	<script src="//cdn.jsdelivr.net/npm/chart.js"></script>
+	<script src="//cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+	<script src="//cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+	<script src="/js/index.js"></script>
+</head>
+<body>
+	<header>
+		<div></div>
+		<div id="title-container">
+			<div id="title" class="title">Music Chart Machine</div>
+			<div id="subtitle" class="subtitle">Select an artist or chart to begin</div>
+		</div>
+		<div id="user-container">
+			<div id="user-menu">
+				<i class="fa-solid fa-user"></i>
+				<span id="user-name"></span>
+				<i class="fa-solid fa-chevron-down"></i>
+				<div>
+					<a href="javascript:getFavorites()">Favorites</a>
+					<a href="javascript:logout()">Log out</a>
+				</div>
+			</div>
+		</div>
+	</header>
+	<main>
+		<div id="content-container"></div>
+		<div id="chartjs-canvas-container"></div>
+	</main>
+	<footer>
+		<div id="footer-text" class="subtitle">
+		</div>
+		<div id="footer-menus">
+			<div>
+				<select id="artists"></select>
+			</div>
+			<div>
+				<select id="chart-date"></select>
+			</div>
+		</div>
+	</footer>
+</body>
+
+<script id="favorites-template" type="text/x-handlebars-template">
+	<div id="favorites">
+		<div>
+			<div>Artists</div>
+			<div id="fav-artists" class="fav-container">
+				{{#unless artists}}None yet!{{/unless}}
+				{{#each artists}}
+					<span class="fav"><a href="javascript:getArtistGraph('{{id}}')">{{name}}</a>
+					<i id="heart-a-{{id}}" class="fa-heart fa-solid heart heart-filled"></i></span>
+				{{/each}}
+			</div>
+		</div>
+		<div>
+			<div>Songs</div>
+			<div id="fav-songs" class="fav-container">
+				{{#unless songs}}None yet!{{/unless}}
+				{{#each songs}}
+					<span class="fav"><a href="javascript:getSongGraph('{{id}}')">{{name}}</a>
+					<i id="heart-s-{{id}}" class="fa-heart fa-solid heart heart-filled"></i></span>
+				{{/each}}
+			</div>
+		</div>
+	</div>
+</script>
+
+<script id="top100-template" type="text/x-handlebars-template">
+	<div id="chart-table-container">
+		<table id="chart-table">
+			<tbody>
+			<tr>
+				<td>#</td>
+				<td>Title</td>
+				<td>Artist</td>
+				<td>Change</td>
+			</tr>
+			{{#each data}}
+			<tr class="{{#if isTop40}}top-40{{/if}} {{#if isTop10}}top-10{{/if}}">
+				<td>
+					{{position}}
+				</td>
+				<td>
+					<a onclick="javascript:getSongGraph('{{song_id}}');">{{song_title}}</a>
+					<i id="heart-s-{{song_id}}" class="fa-heart fa-{{#if isUserFavSong}}solid heart heart-filled{{else}}regular heart{{/if}}"></i>
+				</td>
+				<td>
+					<a onclick="javascript:getArtistGraph('{{artist_id}}');">{{artist_name}}</a>
+					<i id="heart-a-{{artist_id}}" class="fa-heart fa-{{#if isUserFavArtist}}solid heart heart-filled{{else}}regular heart{{/if}}"></i>
+				</td>
+				<td>
+					{{#if isFirstWeek}}
+					<span class="change-new">NEW</span>
+					{{else}}
+					{{#if changeNone}}
+					<span class="change-none">
+						<i class="fa-regular fa-circle-pause change-none"></i> 0
+					</span>
+					{{else}}
+					{{#if changeUp}}
+					<span class="change-up">
+						<i class="fa-regular fa-circle-up"></i>
+						{{change}}
+					</span>
+					{{else}}
+					<span class="change-down">
+					<i class="fa-regular fa-circle-down change-down"></i>
+						{{change}}
+					</span>
+					{{/if}}
+					{{/if}}
+					{{/if}}
+				</td>
+			</tr>
+			{{/each}}
+			</tbody>
+		</table>
+	</div>
+</script>
+
+</html>
