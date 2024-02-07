@@ -1,25 +1,71 @@
-let currentGraph;
-let currentGraphFunction;
-let currentGraphArg;
+let currentView = {};
 let activeResizes = 0;
+let spotifyToken, spotifyPlayer;
 
 $(document).ready(async () => {
 	const user = await confirmLogin();
 	if (user) {
 		Chart.register(ChartDataLabels);
+		const validFunctions = [ getArtistGraph, getSongGraph, getMultiSongGraph, getTop100, getFavorites ];
 		fetchArtists();
 		fetchChartDates();
 		$('#user-name').html(user.data.first_name);
 		$('body').show();
+		const qs = new URLSearchParams(location.search);
+		if (qs.get('state')) {
+			const [ stateFunction, stateArgs ] = qs.get('state').split(':');
+			const targetFunction = validFunctions.find(f => f.name === stateFunction);
+			if (targetFunction) targetFunction(...stateArgs.split(','));
+		}
+		if (location.search.includes('code=')) await getSpotifyToken(qs.get('code'));
 	}
 	$(window).on('resize', () => {
 		activeResizes++;
 		setTimeout(() => {
 			activeResizes--;
-			if (activeResizes === 0 && currentGraphFunction) currentGraphFunction(currentGraphArg);
+			if (activeResizes === 0 && currentView.graphFunction) {
+				currentView.graphFunction(currentView.graphArgs);
+			}
 		}, 500);
 	});
 });
+
+window.onSpotifyIframeApiReady = IFrameAPI => {
+	const element = document.getElementById('embed-iframe');
+	const options = {
+		width: 400,
+		height: 600,
+		uri: 'spotify:track:6uLMxmK9MHb6fiecxn2yrp'
+	};
+	const callback = EmbedController => {};
+	IFrameAPI.createController(element, options, callback);
+};
+
+//const spotifyLogin = () => {
+//	fetch(`/spotify/login`)
+//		.then(res => processFetchResponse(res))
+//		.then(spotify => {
+//			if (spotify.url) {
+//				const state = `&state=${currentView.graphFunction?.name || 'index'}:${currentView.graphArgs || ''}`;
+//				return location.href = spotify.url + state;
+//			}
+//		})
+//		.catch(err => console.error(err));
+//};
+//
+//const getSpotifyToken = (code, state) => {
+//	fetch(`/spotify/token?code=${code}`)
+//	.then(res => processFetchResponse(res))
+//	.then(token => {
+//		if (!token?.access_token) {
+//			console.error('Spotify login URL not found');
+//		} else {
+//			token.expires = Date.now() + (1000 * token.expires_in);
+//			spotifyToken = token;
+//		}
+//	})
+//	.catch(err => console.error(err));
+//};
 
 const clearTitles = () => {
 	$('#title').html('');
@@ -129,14 +175,15 @@ const sendHeartEvent = (type, id) => {
 	});
 };
 
-const displayGraph = config => {
+const displayGraph = (config, graphFunction, graphArgs) => {
 	$('#content-container').hide();
-	if (currentGraph) currentGraph.destroy();
+	if (currentView.graph) currentView.graph.destroy();
 	$('#chartjs-canvas-container').children().remove();
 	const canvas = document.createElement('canvas');
 	$(canvas).attr('id', 'chartjs-canvas');
 	$(canvas).appendTo($('#chartjs-canvas-container'));
-	currentGraph = new Chart($('#chartjs-canvas'), config);
+	const graph = new Chart($('#chartjs-canvas'), config);
+	currentView = { graph, graphFunction, graphArgs };
 	scroll({ top: 0 });
 	$('#chartjs-canvas-container').show();
 };
@@ -146,20 +193,10 @@ const getArtistGraph = async artistId => {
 		try {
 			if (!artistId) return resolve();
 			clearTitles();
-			currentGraphFunction = getArtistGraph;
-			currentGraphArg = artistId;
 			fetch(`/artists/${artistId}/songs`)
 			.then(res => processFetchResponse(res))
 			.then(res => {
 				const json = res.data;
-
-				fetch(`/spotify/artists/${json[0].artist_name}`)
-				.then(res2 => processFetchResponse(res2))
-				.then(spotify => {
-					$('#artist-image').html(`<img src="${spotify.image}">`);
-				})
-				.catch(err => console.error(err));
-
 				$('#title').html(`${heartIcon('a', json[0].artist_id, res.isFavorite)} ${json[0].artist_name}: Chart Performance`);
 				const subtitle = (json.length === 1 ? '' : `<div class="bold"><a class="bold" 
 				href="javascript:getMultiSongGraph('${json[0].artist_id}');">View weekly performance for all songs by 
@@ -173,7 +210,7 @@ const getArtistGraph = async artistId => {
 				config.data.datasets[0].data = json.map(song => song.peak_position);
 
 				config.options.onClick = event => {
-					const points = currentGraph.getElementsAtEventForMode(event, 'nearest', {intersect: true}, true);
+					const points = currentView.graph.getElementsAtEventForMode(event, 'nearest', {intersect: true}, true);
 					if (points.length) getSongGraph(json[points[0].index].song_id);
 				};
 				config.options.plugins.datalabels.color = ctx => '#1880e7';
@@ -188,7 +225,7 @@ const getArtistGraph = async artistId => {
 					click: (ctx, event) => getSongGraph(json[ctx.dataIndex].song_id)
 				}
 				setHeartMouseEvents();
-				resolve(displayGraph(config));
+				resolve(displayGraph(config, getArtistGraph, [ artistId ]));
 			})
 			.catch(err => handleError(err) && reject());
 		} catch (err) {
@@ -203,7 +240,7 @@ const getSongGraph = async songId => {
 			if (!songId) return resolve();
 			clearTitles();
 			currentGraphFunction = getSongGraph;
-			currentGraphArg = songId;
+			currentViewArgs = songId;
 			fetch(`/songs/${songId}/graph`)
 			.then(res => processFetchResponse(res))
 			.then(res => {
@@ -239,7 +276,7 @@ const getSongGraph = async songId => {
 				config.data.datasets[0].label = 'Chart Position';
 				config.data.datasets[0].data = data.map(song => song.position);
 				config.options.onClick = event => {
-					const points = currentGraph.getElementsAtEventForMode(event, 'nearest', {intersect: true}, true);
+					const points = currentView.graph.getElementsAtEventForMode(event, 'nearest', {intersect: true}, true);
 					if (points.length) getTop100(data[points[0].index].date.substring(0, 10));
 				};
 				config.options.plugins.datalabels.offset = 10;
@@ -250,7 +287,7 @@ const getSongGraph = async songId => {
 				};
 				config.options.tooltip = {yAlign: 'bottom'};
 				setHeartMouseEvents();
-				resolve(displayGraph(config));
+				resolve(displayGraph(config, getSongGraph, [ songId ]));
 			}).catch(err => handleError(err) && reject());
 		} catch (err) {
 			handleError(err) && reject();
@@ -264,7 +301,7 @@ const getMultiSongGraph = async artistId => {
 			if (!artistId) return resolve();
 			clearTitles();
 			currentGraphFunction = getMultiSongGraph;
-			currentGraphArg = artistId;
+			currentViewArgs = artistId;
 			fetch(`/artists/${artistId}/songs/graph`)
 			.then(res => processFetchResponse(res))
 			.then(data => {
@@ -309,7 +346,7 @@ const getMultiSongGraph = async artistId => {
 				config.options.plugins.datalabels.align = 'bottom';
 				config.options.plugins.datalabels.formatter = (value, ctx) => {};
 				setHeartMouseEvents();
-				resolve(displayGraph(config));
+				resolve(displayGraph(config, getMultiSongGraph, [ artistId ]));
 			})
 			.catch(err => handleError(err) && reject());
 		} catch (err) {
@@ -323,8 +360,6 @@ const getTop100 = async chartDate => {
 		try {
 			scroll({ top: 0 });
 			clearTitles();
-			currentGraphFunction = null;
-			currentGraphArg = null;
 			fetch(`/charts/${chartDate}`)
 			.then(res => processFetchResponse(res))
 			.then(data => {
@@ -338,6 +373,7 @@ const getTop100 = async chartDate => {
 				$('#content-container').html(template(data));
 				$('#content-container').show();
 				setHeartMouseEvents();
+				currentView = { graphFunction: getTop100, graphArgs: [ chartDate ] };
 				resolve();
 			})
 			.catch(err => handleError(err) && reject());
@@ -350,7 +386,6 @@ const getTop100 = async chartDate => {
 const getFavorites = async () => {
 	return new Promise((resolve, reject) => {
 		try {
-			currentGraphFunction = 'favorites';
 			fetch(`/user/favorites`)
 			.then(res => processFetchResponse(res))
 			.then(data => {
@@ -360,6 +395,7 @@ const getFavorites = async () => {
 				$('#content-container').html(template(data));
 				$('#content-container').show();
 				setHeartMouseEvents();
+				currentView = { graphFunction: getFavorites, graphArgs: [] };
 				$('#title').html('<div>Your Favorites</div>');
 				resolve();
 			})
