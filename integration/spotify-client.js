@@ -24,19 +24,14 @@ const refreshAccessToken = () => {
 	});
 }
 
-const findArtist = query => {
+const searchArtist = name => {
 	return new Promise(async (resolve, reject) => {
 		try {
-			await refreshAccessToken();
-			fetch(`https://api.spotify.com/v1/search?${query}`, {
-				headers: { Authorization: `Bearer ${currentAccessToken.token}` }
-			})
-			.then(async res => await res.json())
-			.then(result => {
-				resolve({
-					image: result.artists.items[0]?.images[0]?.url,
-					url: result.artists.items[0]?.href
-				});
+			const result = await search(`type=artist&market=US&artist=${encodeURIComponent(name)}`);
+			if (!result?.artists) return resolve({ status: 404 });
+			resolve({
+				image: result.artists.items[0]?.images[0]?.url,
+				url: result.artists.items[0]?.href
 			});
 		} catch (err) {
 			reject(err);
@@ -44,4 +39,39 @@ const findArtist = query => {
 	});
 };
 
-module.exports = { findArtist };
+const searchSong = (title, artist) => {
+	return new Promise(async (resolve, reject) => {
+		try {
+			const result = await search(
+				`type=track&market=US&limit=1&q=${encodeURIComponent(`track:${title} artist:${artist}`)}`
+			);
+			if (!result?.tracks) return resolve({ status: 404 });
+			resolve({
+				uri: result.tracks.items[0]?.uri
+			});
+		} catch (err) {
+			reject(err);
+		}
+	});
+};
+
+const search = query => {
+	return new Promise(async (resolve, reject) => {
+		try {
+			await refreshAccessToken();
+			console.log(currentAccessToken.token);
+			console.log(`https://api.spotify.com/v1/search?${query}`);
+			fetch(`https://api.spotify.com/v1/search?${query}`, {
+				headers: { Authorization: `Bearer ${currentAccessToken.token}` }
+			})
+			.then(async res => await res.json())
+			.then(result => {
+				resolve(result);
+			});
+		} catch (err) {
+			reject(err);
+		}
+	});
+};
+
+module.exports = { search, searchArtist, searchSong };

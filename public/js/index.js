@@ -1,6 +1,6 @@
 let currentView = {};
 let activeResizes = 0;
-let spotifyToken, spotifyPlayer;
+let spotifyToken, spotifyPlayer, spotifyController;
 
 $(document).ready(async () => {
 	const user = await confirmLogin();
@@ -34,10 +34,9 @@ window.onSpotifyIframeApiReady = IFrameAPI => {
 	const element = document.getElementById('embed-iframe');
 	const options = {
 		width: 400,
-		height: 600,
-		uri: 'spotify:track:6uLMxmK9MHb6fiecxn2yrp'
+		height: 600
 	};
-	const callback = EmbedController => {};
+	const callback = EmbedController => spotifyController = EmbedController;
 	IFrameAPI.createController(element, options, callback);
 };
 
@@ -66,6 +65,20 @@ window.onSpotifyIframeApiReady = IFrameAPI => {
 //	})
 //	.catch(err => console.error(err));
 //};
+
+const getSpotifySong = (title, artist, callback) => {
+	try {
+		fetch(`/spotify/search/song?title=${encodeURIComponent(title)}&artist=${encodeURIComponent(artist)}`)
+			.then(res => processFetchResponse(res))
+			.then(json => {
+				callback(null, json);
+				if (json.uri) spotifyController.loadUri(json.uri);
+			})
+			.catch(err => callback(err));
+	} catch (err) {
+		callback(err);
+	}
+};
 
 const clearTitles = () => {
 	$('#title').html('');
@@ -242,18 +255,18 @@ const getSongGraph = async songId => {
 			currentGraphFunction = getSongGraph;
 			currentViewArgs = songId;
 			fetch(`/songs/${songId}/graph`)
-			.then(res => processFetchResponse(res))
-			.then(res => {
-				const data = res.data;
-				$('#title').html(`${heartIcon('s', data[0].song_id, res.isFavoriteSong)} "${data[0].song_title}" by 
-					${heartIcon('a', data[0].artist_id, res.isFavoriteArtist)} <a href="javascript:getArtistGraph('${data[0].artist_id}')">${data[0].artist_name}</a>`);
-				$('#subtitle').html(`
-				<div class="bold">All songs by ${data[0].artist_name.replace(/^The /, 'the ')}: 
-				<a href="javascript:getArtistGraph('${data[0].artist_id}')">Peak position</a> | 
-				<a href="javascript:getMultiSongGraph('${data[0].artist_id}')">Weekly performance</a></div>
-				<div>Click graph points to view full charts for each week</div>
-			`);
-				fetch(`/artists/${data[0].artist_id}/songs`)
+				.then(res => processFetchResponse(res))
+				.then(res => {
+					const data = res.data;
+					$('#title').html(`${heartIcon('s', data[0].song_id, res.isFavoriteSong)} "${data[0].song_title}" by 
+						${heartIcon('a', data[0].artist_id, res.isFavoriteArtist)} <a href="javascript:getArtistGraph('${data[0].artist_id}')">${data[0].artist_name}</a>`);
+					$('#subtitle').html(`
+					<div class="bold">All songs by ${data[0].artist_name.replace(/^The /, 'the ')}: 
+					<a href="javascript:getArtistGraph('${data[0].artist_id}')">Peak position</a> | 
+					<a href="javascript:getMultiSongGraph('${data[0].artist_id}')">Weekly performance</a></div>
+					<div>Click graph points to view full charts for each week</div>
+				`);
+			fetch(`/artists/${data[0].artist_id}/songs`)
 				.then(res => processFetchResponse(res))
 				.then(otherSongs => {
 					if (otherSongs.length > 1) {
@@ -266,29 +279,35 @@ const getSongGraph = async songId => {
 						$(artistOtherSongs).prependTo($('#subtitle'));
 					}
 				})
-				.catch(err => {
-					console.error(err);
-				});
+				.catch(err => console.error(err));
 
-				const config = Object.assign({}, baseConfig);
-				config.data = { datasets: Object.assign([], baseDatasets) };
-				config.data.labels = data.map(song => song.date.substring(0, 10));
-				config.data.datasets[0].label = 'Chart Position';
-				config.data.datasets[0].data = data.map(song => song.position);
-				config.options.onClick = event => {
-					const points = currentView.graph.getElementsAtEventForMode(event, 'nearest', {intersect: true}, true);
-					if (points.length) getTop100(data[points[0].index].date.substring(0, 10));
-				};
-				config.options.plugins.datalabels.offset = 10;
-				config.options.plugins.datalabels.align = 'bottom';
-				config.options.plugins.datalabels.formatter = (value, ctx) => data[ctx.dataIndex].position;
-				config.options.plugins.datalabels.listeners = {
-					click: (ctx, event) => getTop100(data[ctx.dataIndex].date.substring(0, 10))
-				};
-				config.options.tooltip = {yAlign: 'bottom'};
-				setHeartMouseEvents();
-				resolve(displayGraph(config, getSongGraph, [ songId ]));
-			}).catch(err => handleError(err) && reject());
+			getSpotifySong(data[0].song_title, data[0].artist_name, (err, spotify) => {
+				if (err) {
+					console.error(err);
+				} else {
+					console.log(spotify);
+				}
+			});
+
+			const config = Object.assign({}, baseConfig);
+			config.data = { datasets: Object.assign([], baseDatasets) };
+			config.data.labels = data.map(song => song.date.substring(0, 10));
+			config.data.datasets[0].label = 'Chart Position';
+			config.data.datasets[0].data = data.map(song => song.position);
+			config.options.onClick = event => {
+				const points = currentView.graph.getElementsAtEventForMode(event, 'nearest', {intersect: true}, true);
+				if (points.length) getTop100(data[points[0].index].date.substring(0, 10));
+			};
+			config.options.plugins.datalabels.offset = 10;
+			config.options.plugins.datalabels.align = 'bottom';
+			config.options.plugins.datalabels.formatter = (value, ctx) => data[ctx.dataIndex].position;
+			config.options.plugins.datalabels.listeners = {
+				click: (ctx, event) => getTop100(data[ctx.dataIndex].date.substring(0, 10))
+			};
+			config.options.tooltip = {yAlign: 'bottom'};
+			setHeartMouseEvents();
+			resolve(displayGraph(config, getSongGraph, [ songId ]));
+		}).catch(err => handleError(err) && reject());
 		} catch (err) {
 			handleError(err) && reject();
 		}
