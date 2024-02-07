@@ -17,61 +17,54 @@ const refreshAccessToken = () => {
 				};
 				resolve(currentAccessToken);
 			})
-			.catch(err => console.error(err));
-		} catch (err) {
-			reject(err);
-		}
+			.catch(err => reject(err));
+		} catch (err) { reject(err); }
 	});
 }
 
-const searchArtist = name => {
+const searchArtist = (name, year) => {
 	return new Promise(async (resolve, reject) => {
 		try {
-			const result = await search(`type=artist&market=US&artist=${encodeURIComponent(name)}`);
-			if (!result?.artists) return resolve({ status: 404 });
-			resolve({
-				image: result.artists.items[0]?.images[0]?.url,
-				url: result.artists.items[0]?.href
-			});
-		} catch (err) {
-			reject(err);
-		}
+			const result = await request(
+				`/search?type=artist&market=US&limit=1&q=${encodeURIComponent(`artist:${name} year:${year}`)}`
+			);
+			if (!result?.artists || result.artists.length === 0) return resolve({ status: 404 });
+			resolve(result.artists.items[0]);
+		} catch (err) { reject(err); }
 	});
 };
 
 const searchSong = (title, artist) => {
 	return new Promise(async (resolve, reject) => {
 		try {
-			const result = await search(
-				`type=track&market=US&limit=1&q=${encodeURIComponent(`track:${title} artist:${artist}`)}`
+			const result = await request(
+				`/search?type=track&market=US&limit=1&q=${encodeURI(`track:${title} artist:${artist}`)}`
 			);
 			if (!result?.tracks) return resolve({ status: 404 });
-			resolve({
-				uri: result.tracks.items[0]?.uri
-			});
-		} catch (err) {
-			reject(err);
-		}
+			resolve({ uri: result.tracks.items[0]?.uri });
+		} catch (err) { reject(err); }
 	});
 };
 
 const search = query => {
 	return new Promise(async (resolve, reject) => {
 		try {
-			await refreshAccessToken();
-			console.log(currentAccessToken.token);
-			console.log(`https://api.spotify.com/v1/search?${query}`);
-			fetch(`https://api.spotify.com/v1/search?${query}`, {
-				headers: { Authorization: `Bearer ${currentAccessToken.token}` }
-			})
-			.then(async res => await res.json())
-			.then(result => {
-				resolve(result);
-			});
-		} catch (err) {
-			reject(err);
-		}
+			resolve(await request(`/search?${query}`));
+		} catch (err) { reject(err); }
 	});
 };
 
-module.exports = { search, searchArtist, searchSong };
+const request = (path, options = {headers: {}}) => {
+	return new Promise(async (resolve, reject) => {
+		try {
+			await refreshAccessToken();
+			options.headers.authorization = `Bearer ${currentAccessToken.token}`;
+			fetch(`https://api.spotify.com/v1${path}`, options)
+				.then(async res => await res.json())
+				.then(result => resolve(result))
+				.catch(err => reject(err));
+		} catch (err) { reject(err); }
+	});
+};
+
+module.exports = { request, search, searchArtist, searchSong };

@@ -3,35 +3,32 @@ const util = require('../util');
 
 module.exports = app => {
 	app.get('/spotify/search/song', util.checkAuth, async (req, res, next) => {
-		const data = await spotify.searchSong(req.query.title, req.query.artist);
-		res.json(data);
+		try {
+			const data = await spotify.searchSong(req.query.title, req.query.artist);
+			res.json(data);
+		} catch (err) { return util.routeError(res, err); }
 	});
 
-//	app.get('/spotify/login', (req, res) => {
-//		const authParams = new URLSearchParams({
-//			response_type: 'code',
-//			client_id: process.env.SPOTIFY_CLIENT_ID,
-//			scope: 'streaming user-read-email user-read-private',
-//			redirect_uri: `http://localhost:${process.env.PORT || 3000}`
-//		})
-//		res.json({ url: `https://accounts.spotify.com/authorize/?${authParams.toString()}` });
-//	});
-//
-//	app.get('/spotify/token', (req, res) => {
-//		fetch('https://accounts.spotify.com/api/token',
-//			{
-//				method: 'POST',
-//				body: `code=${req.query.code}&redirect_uri=http://localhost:${process.env.PORT || 3000}&grant_type=authorization_code`,
-//				headers: {
-//					'Authorization': 'Basic ' + Buffer.from(`${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`).toString('base64'),
-//					'Content-Type': 'application/x-www-form-urlencoded'
-//			}
-//		})
-//		.then(async res => await res.json())
-//		.then(json => res.json(json))
-//		.catch(err => {
-//			console.error(err);
-//			return res.sendStatus(500);
-//		})
-//	});
+	app.get('/spotify/search/artist', util.checkAuth, async (req, res, next) => {
+		try {
+			const data = await spotify.searchArtist(req.query.name, req.query.year);
+			res.json(data);
+		} catch (err) { return util.routeError(res, err); }
+	});
+
+	app.get('/spotify/artists/id', util.checkAuth, async (req, res, next) => {
+		const artist = await spotify.searchArtist(req.query.name, req.query.year);
+		if (artist) return res.json({ id: artist.id, uri: artist.uri });
+		res.json({});
+	});
+
+	app.get('/spotify/artist/top-tracks', util.checkAuth, async (req, res, next) => {
+		const artist = await spotify.searchArtist(req.query.name, req.query.year);
+		if (artist) {
+			const data = await spotify.request(`/artists/${artist.id}/top-tracks?market=US`);
+			if (!data.tracks || data.tracks.length === 0) return res.json([]);
+			return res.json(data.tracks.map(track => track.uri));
+		}
+		res.json([]);
+	});
 };

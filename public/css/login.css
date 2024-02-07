@@ -34,6 +34,10 @@ html {
   font: 400 16px Rubik, sans-serif;
 }
 
+body {
+  margin: 20px;
+}
+
 a {
   cursor: pointer;
 }
@@ -114,4 +118,4 @@ header {
   width: 10rem;
 }
 
-/*# sourceMappingURL=data:application/json;charset=utf-8,%7B%22version%22:3,%22sourceRoot%22:%22%22,%22sources%22:%5B%22fonts.scss%22,%22main.scss%22,%22constants.scss%22,%22login.scss%22%5D,%22names%22:%5B%5D,%22mappings%22:%22AAAA;EACC;EACA;EACA;EACA;EACA;EACA;;AAGD;EACC;EACA;EACA;EACA;EACA;EACA;;AAGD;EACC;EACA;EACA;EACA;EACA;EACA;;ACpBD;EACC;;;AAGD;EACC;;;AAGD;EACC;;;AAGD;EACC;;;AAGD;EACC,OCrBY;EDsBZ;;;AAGD;EACC;;;AAGD;EACC,kBC9BY;ED+BZ,cC/BY;EDgCZ;EACA;EACA;;;AAGD;EACC,aC5BkB;;;AD+BnB;EACC,aC/BmB;;;ADkCpB;EACC,aCpCkB;EDqClB;EACA,OChDY;;;ADmDb;EACC;EACA;;;AAGD;EACC;;;AAGD;EACC;;;AAGD;EACC;EACA;;;AAGD;EACC;;;AAGD;EACC,OCpEW;;;ACFZ;EACC;;;AAGD;EACC;EACA;EACA;EACA;EACA;;AAEA;EACC;EACA;;AAGD;EACC%22,%22file%22:%22login.css%22%7D */
+/*# sourceMappingURL=data:application/json;charset=utf-8,%7B%22version%22:3,%22sourceRoot%22:%22%22,%22sources%22:%5B%22fonts.scss%22,%22main.scss%22,%22constants.scss%22,%22login.scss%22%5D,%22names%22:%5B%5D,%22mappings%22:%22AAAA;EACC;EACA;EACA;EACA;EACA;EACA;;AAGD;EACC;EACA;EACA;EACA;EACA;EACA;;AAGD;EACC;EACA;EACA;EACA;EACA;EACA;;ACpBD;EACC;;;AAGD;EACC;;;AAGD;EACC;;;AAGD;EACC;;;AAGD;EACC;;;AAGD;EACC,OCzBY;ED0BZ;;;AAGD;EACC;;;AAGD;EACC,kBClCY;EDmCZ,cCnCY;EDoCZ;EACA;EACA;;;AAGD;EACC,aChCkB;;;ADmCnB;EACC,aCnCmB;;;ADsCpB;EACC,aCxCkB;EDyClB;EACA,OCpDY;;;ADuDb;EACC;EACA;;;AAGD;EACC;;;AAGD;EACC;;;AAGD;EACC;EACA;;;AAGD;EACC;;;AAGD;EACC,OCxEW;;;ACFZ;EACC;;;AAGD;EACC;EACA;EACA;EACA;EACA;;AAEA;EACC;EACA;;AAGD;EACC%22,%22file%22:%22login.css%22%7D */

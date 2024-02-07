@@ -1,6 +1,6 @@
 let currentView = {};
 let activeResizes = 0;
-let spotifyToken, spotifyPlayer, spotifyController;
+let spotifyToken, spotifyPlayer, spotifyController, spotifyIsPlaying = false;
 
 $(document).ready(async () => {
 	const user = await confirmLogin();
@@ -19,7 +19,11 @@ $(document).ready(async () => {
 		}
 		if (location.search.includes('code=')) await getSpotifyToken(qs.get('code'));
 	}
+	$('#spotify-autoplay').on('change', e => {
+		if (e.currentTarget.checked && spotifyController) spotifyController.play();
+	});
 	$(window).on('resize', () => {
+		console.log('resize');
 		activeResizes++;
 		setTimeout(() => {
 			activeResizes--;
@@ -33,21 +37,30 @@ $(document).ready(async () => {
 window.onSpotifyIframeApiReady = IFrameAPI => {
 	const element = document.getElementById('embed-iframe');
 	const options = {
-		width: 300,
-		height: 100
+		width: 400,
+		height: 80
 	};
 	const callback = EmbedController => spotifyController = EmbedController;
 	IFrameAPI.createController(element, options, callback);
+	spotifyController.addListener('playback_update', e => spotifyIsPlaying = !e.data.isPaused );
 };
 
-const getSpotifySong = (title, artist, callback) => {
+const addSpotifyUriToPlayer = uri => {
+	if (!spotifyController || !uri) return;
+	spotifyController.loadUri(uri);
+	if ($('#spotify-autoplay').prop('checked')) spotifyController.play();
+	$('#spotify-container').show();
+	$('#spotify-autoplay-container').show();
+}
+
+const loadSpotifySong = (title, artist, callback) => {
 	try {
+		$('#spotify-autoplay-container').hide();
 		fetch(`/spotify/search/song?title=${encodeURIComponent(title)}&artist=${encodeURIComponent(artist)}`)
 			.then(res => processFetchResponse(res))
-			.then(json => {
-				if (callback) callback(null, json);
-				if (json.uri) spotifyController.loadUri(json.uri);
-				$('header > div:first-child').css('visibility', 'visible');
+			.then(data => {
+				if (callback) callback(null, data);
+				if (data.uri) addSpotifyUriToPlayer(data.uri);
 			})
 			.catch(err => callback ? callback(err) : console.error(err));
 	} catch (err) {
@@ -55,10 +68,26 @@ const getSpotifySong = (title, artist, callback) => {
 	}
 };
 
-const clearTitles = () => {
+const loadSpotifyArtist = (artist, year, callback) => {
+	try {
+		$('#spotify-autoplay-container').hide();
+		fetch(`/spotify/artists/id/?name=${encodeURIComponent(artist)}&year=${year}`)
+		.then(res => processFetchResponse(res))
+		.then(data => {
+			if (callback) callback(null, uris);
+			if (data.uri) addSpotifyUriToPlayer(data.uri);
+		})
+		.catch(err => callback ? callback(err) : console.error(err));
+	} catch (err) {
+		callback ? callback(err) : console.error(err);
+	}
+};
+
+const clearTitles = (hideSpotifyPlayer = true) => {
 	$('#title').html('');
 	$('#subtitle').html('');
-	$('header > div:first-child').css('visibility', 'hidden');
+	if (hideSpotifyPlayer && spotifyController && spotifyIsPlaying) spotifyController.togglePlay();
+	if (hideSpotifyPlayer) $('#spotify-container').hide();
 }
 
 const handleError = err => {
@@ -172,9 +201,14 @@ const displayGraph = (config, graphFunction, graphArgs) => {
 	$(canvas).attr('id', 'chartjs-canvas');
 	$(canvas).appendTo($('#chartjs-canvas-container'));
 	const graph = new Chart($('#chartjs-canvas'), config);
-	currentView = { graph, graphFunction, graphArgs };
 	scroll({ top: 0 });
 	$('#chartjs-canvas-container').show();
+	setCurrentView(graph, graphFunction, graphArgs);
+};
+
+const setCurrentView = (graph, graphFunction, graphArgs) => {
+	currentView = { graph, graphFunction, graphArgs,
+		previous: currentView ? currentView.graphFunction : null };
 };
 
 const getArtistGraph = (artistId, isResize) => {
@@ -188,8 +222,8 @@ const getArtistGraph = (artistId, isResize) => {
 				const json = res.data;
 				$('#title').html(`${heartIcon('a', json[0].artist_id, res.isFavorite)} ${json[0].artist_name}: Chart Performance`);
 				const subtitle = (json.length === 1 ? '' : `<div class="bold"><a class="bold" 
-				href="javascript:getMultiSongGraph('${json[0].artist_id}');">View weekly performance for all songs by 
-				${json[0].artist_name.replace(/^The /, 'the ')}</a></div>`) +
+					href="javascript:getMultiSongGraph('${json[0].artist_id}');">View weekly performance for all songs by 
+					${json[0].artist_name.replace(/^The /, 'the ')}</a></div>`) +
 					'<div>Click titles to view chart performance graphs</div>';
 				$('#subtitle').html(subtitle);
 				const config = Object.assign({}, baseConfig);
@@ -213,6 +247,7 @@ const getArtistGraph = (artistId, isResize) => {
 					click: (ctx, event) => getSongGraph(json[ctx.dataIndex].song_id)
 				}
 				setHeartMouseEvents();
+				if (!isResize) loadSpotifyArtist(json[0].artist_name, json[0].peak_week.substring(0, 4));
 				resolve(displayGraph(config, getArtistGraph, [ artistId ]));
 			})
 			.catch(err => handleError(err) && reject());
@@ -227,8 +262,6 @@ const getSongGraph = (songId, isResize) => {
 		try {
 			if (!songId) return resolve();
 			if (!isResize) clearTitles();
-			currentGraphFunction = getSongGraph;
-			currentViewArgs = songId;
 			fetch(`/songs/${songId}/graph`)
 				.then(res => processFetchResponse(res))
 				.then(res => {
@@ -242,7 +275,7 @@ const getSongGraph = (songId, isResize) => {
 						<div>Click graph points to view full charts for each week</div>
 					`);
 
-					if (!isResize) getSpotifySong(data[0].song_title, data[0].artist_name);
+					if (!isResize) loadSpotifySong(data[0].song_title, data[0].artist_name);
 					fetch(`/artists/${data[0].artist_id}/songs`)
 						.then(res => processFetchResponse(res))
 						.then(otherSongs => {
@@ -290,17 +323,16 @@ const getMultiSongGraph = (artistId, isResize) => {
 	return new Promise((resolve, reject) => {
 		try {
 			if (!artistId) return resolve();
-			clearTitles();
-			currentGraphFunction = getMultiSongGraph;
-			currentViewArgs = artistId;
+			clearTitles(false);
 			fetch(`/artists/${artistId}/songs/graph`)
 			.then(res => processFetchResponse(res))
 			.then(data => {
 				$('#title').html(`${heartIcon('a', data.charts[0][0].artist_id, data.isFavoriteArtist)} ${data.charts[0][0].artist_name}: All Songs`);
 				$('#subtitle').html(`
-				<div class="bold"><a href="javascript:getArtistGraph('${data.charts[0][0].artist_id}')">View peak positions only</a></div>
-				<div>Click titles to see details for specific songs or graph points to view full chart for corresponding week</div>
-			`);
+					<div class="bold"><a href="javascript:getArtistGraph('${data.charts[0][0].artist_id}')">View peak positions only</a></div>
+					<div>Click titles to see details for specific songs or graph points to view full chart for corresponding week</div>
+				`);
+				if (!isResize && !spotifyIsPlaying) loadSpotifyArtist(data.charts[0][0].artist_name, data.dates[0].substring(0, 4));
 				const config = Object.assign({}, baseConfig);
 				config.data = { datasets: Object.assign([], baseDatasets) };
 				config.data.labels = data.dates.map(date => date.substring(0, 10));
@@ -350,12 +382,12 @@ const getTop100 = async chartDate => {
 	return new Promise((resolve, reject) => {
 		try {
 			scroll({ top: 0 });
-			clearTitles();
+			clearTitles(false);
 			fetch(`/charts/${chartDate}`)
 			.then(res => processFetchResponse(res))
 			.then(data => {
 				const template = Handlebars.compile($('#top100-template').html());
-				$('#title').html('<div>Top 100 Chart: <span id="other-chart-date"></span></div>');
+				$('#title').html('<div>Top 100 Chart<div id="other-chart-date"></div></div>');
 				let clonedChartDates = $('#chart-date').clone(true);
 				clonedChartDates.attr('id', 'other-chart-date-select');
 				clonedChartDates.appendTo($('#other-chart-date'));
@@ -364,7 +396,7 @@ const getTop100 = async chartDate => {
 				$('#content-container').html(template(data));
 				$('#content-container').show();
 				setHeartMouseEvents();
-				currentView = { graphFunction: getTop100, graphArgs: [ chartDate ] };
+				setCurrentView(null, getTop100, [ chartDate ]);
 				resolve();
 			})
 			.catch(err => handleError(err) && reject());
@@ -380,13 +412,13 @@ const getFavorites = async () => {
 			fetch(`/user/favorites`)
 			.then(res => processFetchResponse(res))
 			.then(data => {
-				clearTitles();
+				clearTitles(false);
 				$('#chartjs-canvas-container').hide();
 				const template = Handlebars.compile($('#favorites-template').html());
 				$('#content-container').html(template(data));
 				$('#content-container').show();
 				setHeartMouseEvents();
-				currentView = { graphFunction: getFavorites, graphArgs: [] };
+				setCurrentView(null, getFavorites, [ ]);
 				$('#title').html('<div>Your Favorites</div>');
 				resolve();
 			})

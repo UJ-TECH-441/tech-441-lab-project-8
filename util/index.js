@@ -8,5 +8,9 @@ module.exports = {
 			return res.redirect(`/login.html?path=${encodeURIComponent(req.path)}`);
 		}
 		return next();
+	},
+	routeError: (res, err) => {
+		console.error(err);
+		res.sendStatus(500);
 	}
 };

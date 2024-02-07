@@ -24,16 +24,22 @@ header {
 	flex-direction: row;
 	justify-content: center;
 	align-items: flex-start;
-	margin-top: 20px;
 
 	> div {
 		flex: 1;
 		display: inline-block;
+
+		#spotify-container, #spotify-autoplay-container {
+			display: none;
+		}
 	}
 
 	#title-container {
-		margin: auto;
 		flex: 2;
+	}
+
+	#other-chart-date {
+		margin-top: 10px;
 	}
 }
 
