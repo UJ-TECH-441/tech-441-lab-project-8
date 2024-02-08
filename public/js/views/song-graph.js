@@ -9,7 +9,6 @@ const getSongGraph = (songId, isResize) => {
 			fetch(`/songs/${songId}/graph`)
 			.then(res => util.processFetchResponse(res))
 			.then(res => {
-
 				const data = res.data;
 				$('#title').html(`${window.viewHandler.hearts.heartIcon('s', data[0].song_id, res.isFavoriteSong)} "${data[0].song_title}" by 
 						${window.viewHandler.hearts.heartIcon('a', data[0].artist_id, res.isFavoriteArtist)} <a href="javascript:window.viewHandler.getArtistGraph('${data[0].artist_id}')">${data[0].artist_name}</a>`);

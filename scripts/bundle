@@ -1,0 +1,3 @@
+#!/bin/sh
+
+exec browserify "public/js/index.js" | uglifyjs -c > "public/js/bundle.js"
