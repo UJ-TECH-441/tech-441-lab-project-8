@@ -23,7 +23,6 @@ $(document).ready(async () => {
 		if (e.currentTarget.checked && spotifyController) spotifyController.play();
 	});
 	$(window).on('resize', () => {
-		console.log('resize');
 		activeResizes++;
 		setTimeout(() => {
 			activeResizes--;
