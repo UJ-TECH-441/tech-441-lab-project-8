@@ -14,9 +14,29 @@
     <option name="outputFromStdout" value="false" />
     <option name="program" value="sass" />
     <option name="runOnExternalChanges" value="true" />
-    <option name="scopeName" value="/public/css" />
+    <option name="scopeName" value="All Places" />
     <option name="trackOnlyRoot" value="true" />
     <option name="workingDir" value="" />
+    <envs />
+  </TaskOptions>
+  <TaskOptions>
+    <option name="arguments" value="-e index.js -o bundle.js" />
+    <option name="checkSyntaxErrors" value="true" />
+    <option name="description" />
+    <option name="exitCodeBehavior" value="ERROR" />
+    <option name="fileExtension" value="js" />
+    <option name="immediateSync" value="true" />
+    <option name="name" value="Browserify" />
+    <option name="output" value="" />
+    <option name="outputFilters">
+      <array />
+    </option>
+    <option name="outputFromStdout" value="false" />
+    <option name="program" value="$PROJECT_DIR$/../../../current/browserify" />
+    <option name="runOnExternalChanges" value="true" />
+    <option name="scopeName" value="/public/js" />
+    <option name="trackOnlyRoot" value="false" />
+    <option name="workingDir" value="$ProjectFileDir$/public/js" />
     <envs />
   </TaskOptions>
 </TaskOptions>

@@ -2,9 +2,6 @@
 <html xmlns="">
 <head>
 	<title>Music Chart Machine</title>
-<!--	<link rel="preconnect" href="//fonts.googleapis.com">-->
-<!--	<link rel="preconnect" href="//fonts.gstatic.com" crossorigin>-->
-<!--	<link rel="preload" as="style" href="//fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap">-->
 	<link href="/css/index.css" rel="stylesheet">
 	<link href="/css/chart-view.css" rel="stylesheet">
 	<link href="/css/fav-view.css" rel="stylesheet">
@@ -14,7 +11,7 @@
 	<script src="//cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 	<script src="//cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
 	<script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
-	<script src="/js/index.js"></script>
+	<script src="/js/bundle.js"></script>
 </head>
 <body>
 	<header>
@@ -36,8 +33,8 @@
 				<span id="user-name"></span>
 				<i class="fa-solid fa-chevron-down"></i>
 				<div>
-					<a href="javascript:getFavorites()">Favorites</a>
-					<a href="javascript:logout()">Log out</a>
+					<a href="javascript:changeView('getFavorites')">Favorites</a>
+					<a href="javascript:window.login.logout()">Log out</a>
 				</div>
 			</div>
 		</div>
@@ -68,7 +65,7 @@
 			<div id="fav-artists" class="fav-container">
 				{{#unless artists}}None yet!{{/unless}}
 				{{#each artists}}
-					<span class="fav"><a href="javascript:getArtistGraph('{{id}}')">{{name}}</a>
+					<span class="fav"><a href="javascript:window.viewHandler.getArtistGraph('{{id}}')">{{name}}</a>
 					<i id="heart-a-{{id}}" class="fa-heart fa-solid heart heart-filled"></i></span>
 				{{/each}}
 			</div>
@@ -78,7 +75,7 @@
 			<div id="fav-songs" class="fav-container">
 				{{#unless songs}}None yet!{{/unless}}
 				{{#each songs}}
-					<span class="fav"><a href="javascript:getSongGraph('{{id}}')">{{name}}</a>
+					<span class="fav"><a href="javascript:window.viewHandler.getSongGraph('{{id}}')">{{name}}</a>
 					<i id="heart-s-{{id}}" class="fa-heart fa-solid heart heart-filled"></i></span>
 				{{/each}}
 			</div>
@@ -102,11 +99,11 @@
 					{{position}}
 				</td>
 				<td>
-					<a onclick="javascript:getSongGraph('{{song_id}}');">{{song_title}}</a>
+					<a onclick="javascript:window.viewHandler.getSongGraph('{{song_id}}');">{{song_title}}</a>
 					<i id="heart-s-{{song_id}}" class="fa-heart fa-{{#if isUserFavSong}}solid heart heart-filled{{else}}regular heart{{/if}}"></i>
 				</td>
 				<td>
-					<a onclick="javascript:getArtistGraph('{{artist_id}}');">{{artist_name}}</a>
+					<a onclick="javascript:window.viewHandler.getArtistGraph('{{artist_id}}');">{{artist_name}}</a>
 					<i id="heart-a-{{artist_id}}" class="fa-heart fa-{{#if isUserFavArtist}}solid heart heart-filled{{else}}regular heart{{/if}}"></i>
 				</td>
 				<td>
