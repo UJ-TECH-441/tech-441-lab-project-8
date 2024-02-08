@@ -5,34 +5,37 @@ const database = require('../data/database');
 
 module.exports = app => {
 	app.get('/user/login-check', util.checkAuth, async (req, res, next) => {
-		res.json(req.user);
+		try {
+			res.json(req.user);
+		} catch (err) { return util.routeError(res, err); }
 	});
 
 	app.post('/user/login', util.passportAuth, async (req, res, next) => {
-		res.sendStatus(200);
+		try {
+			res.sendStatus(200);
+		} catch (err) { return util.routeError(res, err); }
 	});
 
 	app.get('/user/logout', util.checkAuth, async (req, res, next) => {
-		req.session.user = null;
-		req.session.save(err => {
-			if (err) next(err);
-			req.session.regenerate(err => {
+		try {
+			req.session.user = null;
+			req.session.save(err => {
 				if (err) next(err);
-				req.logout((err) => {
-					if (err) { console.log(err); return next(err); }
-					res.redirect('/');
-				});
+				req.session.regenerate(err => {
+					if (err) next(err);
+					req.logout((err) => {
+						if (err) { console.log(err); return next(err); }
+						res.redirect('/');
+					});
+				})
 			})
-		})
+		} catch (err) { return util.routeError(res, err); }
 	});
 
 	app.get('/user/favorites', util.checkAuth, async (req, res, next) => {
 		try {
 			res.json(req.user.data.favorites);
-		} catch (err) {
-			console.error(err);
-			res.sendStatus(500);
-		}
+		} catch (err) { return util.routeError(res, err); }
 	});
 
 	app.post('/user/favorites', util.checkAuth, async (req, res, next) => {
@@ -55,9 +58,6 @@ module.exports = app => {
 				req.user.data.favorites[req.body.type] = orderBy(req.user.data.favorites[req.body.type], ['name', 'title']);
 			}
 			res.json({success: true});
-		} catch (err) {
-			console.error(err);
-			res.sendStatus(500);
-		}
+		} catch (err) { return util.routeError(res, err); }
 	});
 };

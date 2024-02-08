@@ -17,18 +17,22 @@ module.exports = app => {
 	});
 
 	app.get('/spotify/artists/id', util.checkAuth, async (req, res, next) => {
-		const artist = await spotify.searchArtist(req.query.name, req.query.year);
-		if (artist) return res.json({ id: artist.id, uri: artist.uri });
-		res.json({});
+		try {
+			const artist = await spotify.searchArtist(req.query.name, req.query.year);
+			if (artist) return res.json({ id: artist.id, uri: artist.uri });
+			res.json({});
+		} catch (err) { return util.routeError(res, err); }
 	});
 
 	app.get('/spotify/artist/top-tracks', util.checkAuth, async (req, res, next) => {
-		const artist = await spotify.searchArtist(req.query.name, req.query.year);
-		if (artist) {
-			const data = await spotify.request(`/artists/${artist.id}/top-tracks?market=US`);
-			if (!data.tracks || data.tracks.length === 0) return res.json([]);
-			return res.json(data.tracks.map(track => track.uri));
-		}
-		res.json([]);
+		try {
+			const artist = await spotify.searchArtist(req.query.name, req.query.year);
+			if (artist) {
+				const data = await spotify.request(`/artists/${artist.id}/top-tracks?market=US`);
+				if (!data.tracks || data.tracks.length === 0) return res.json([]);
+				return res.json(data.tracks.map(track => track.uri));
+			}
+			res.json([]);
+		} catch (err) { return util.routeError(res, err); }
 	});
 };
