@@ -4,7 +4,7 @@ let spotifyToken, spotifyPlayer, spotifyController, spotifyIsPlaying = false;
 
 $(document).ready(async () => {
 	$('#spotify-autoplay').on('change', e => {
-		if (e.currentTarget.checked && spotifyController) spotifyController.play();
+		if (e.currentTarget.checked && spotifyController && !spotifyIsPlaying) spotifyController.play();
 	});
 });
 
