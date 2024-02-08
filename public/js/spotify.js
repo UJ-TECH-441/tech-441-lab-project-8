@@ -16,10 +16,7 @@ window.onSpotifyIframeApiReady = IFrameAPI => {
 	};
 	const callback = EmbedController => spotifyController = EmbedController;
 	IFrameAPI.createController(element, options, callback);
-	spotifyController.addListener('playback_update', e => {
-		spotifyIsPlaying = !e.data.isPaused
-		console.log(spotifyIsPlaying);
-	} );
+	spotifyController.addListener('playback_update', e => spotifyIsPlaying = !e.data.isPaused);
 };
 
 const addSpotifyUriToPlayer = uri => {

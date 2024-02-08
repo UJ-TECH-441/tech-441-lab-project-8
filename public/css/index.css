@@ -91,7 +91,7 @@ button {
   text-align: center;
 }
 
-.subtitle > div, .subtitle > select {
+.subtitle > div {
   margin-top: 10px;
 }
 

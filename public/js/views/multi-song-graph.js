@@ -14,10 +14,6 @@ const getMultiSongGraph = (artistId, isResize) => {
 					<div class="bold"><a href="javascript:window.viewHandler.getArtistGraph('${data.charts[0][0].artist_id}')">View peak positions only</a></div>
 					<div>Click titles to see details for specific songs or graph points to view full chart for corresponding week</div>
 				`);
-				if (!isResize && !spotify.spotifyIsPlaying) {
-					console.log(spotify.spotifyIsPlaying);
-					spotify.loadSpotifyArtist(data.charts[0][0].artist_name, data.dates[0].substring(0, 4));
-				}
 				const config = Object.assign({}, baseConfig);
 				config.data = { datasets: Object.assign([], baseDatasets) };
 				config.data.labels = data.dates.map(date => date.substring(0, 10));
