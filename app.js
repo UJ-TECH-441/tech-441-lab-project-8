@@ -31,7 +31,7 @@ app.use(session({
 	store: new MemoryStore({}),
 	resave: false,
 	saveUninitialized: false,
-	cookie: { secure: false, maxAge: 180000 }
+	cookie: { secure: false, maxAge: 86400000 }
 }));
 app.use(passport.initialize());
 app.use(passport.session());
