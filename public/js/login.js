@@ -27,10 +27,7 @@ const login = async () => {
 				if (res.redirected) return location.href = res.url;
 				if (res.status === 401) return resolve(false);
 				if (!res.ok) throw new Error(res.statusText);
-				// TODO: Redirect user to the original path
-				//if (!location.search || location.search.includes('login')) return location.href = '/';
-				//location.href = `/${location.search}`;
-				location.href = '/';
+				location.href = `/${location.search}`;
 			})
 			.catch(err => handleError(err) && reject());
 		} catch (err) {

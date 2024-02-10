@@ -10,20 +10,53 @@ let validFunctions;
 $(document).ready(async () => {
 	const user = await window.login.confirmLogin();
 	if (user) {
-		validFunctions = [ viewHandler.getArtistGraph, viewHandler.getSongGraph,
-			viewHandler.getMultiSongGraph, viewHandler.getTop100, viewHandler.getFavorites ];
-		fetchArtists();
-		fetchChartDates();
-		$('#user-name').html(user.data.first_name);
-		$('body').show();
-		const qs = new URLSearchParams(location.search);
-		if (qs.get('state')) {
-			const [ stateFunction, stateArgs ] = qs.get('state').split(':');
-			const targetFunction = validFunctions.find(f => f.name === stateFunction);
-			if (targetFunction) targetFunction(...stateArgs.split(','));
-		}
-		if (location.search.includes('code=')) await spotify.getSpotifyToken(qs.get('code'));
+//		validFunctions = [ viewHandler.getArtistGraph, viewHandler.getSongGraph,
+//			viewHandler.getMultiSongGraph, viewHandler.getTop100, viewHandler.getFavorites ];
+		validFunctions = [
+			{
+				name: 'getArtistGraph',
+				func: viewHandler.getArtistGraph,
+				pathRegex: /^\/artists\/([a-e\d\-]+)\/songs$/
+			},
+			{
+				name: 'getSongGraph',
+				func: viewHandler.getSongGraph,
+				pathRegex: /^\/songs\/([a-e\d\-]+)\/graph$/
+			},
+			{
+				name: 'getMultiSongGraph',
+				func: viewHandler.getMultiSongGraph,
+				pathRegex: /^\/artists\/([a-e\d\-]+)\/songs\/graph$/
+			},
+			{
+				name: 'getTop100',
+				func: viewHandler.getTop100,
+				pathRegex: /^\/charts\/([a-e\d\-]+)$/
+			},
+			{
+				name: 'getFavorites',
+				func: viewHandler.getFavorites,
+				pathRegex: /^\/user\/favorites$/
+			}
+		];
+	};
+
+	fetchArtists();
+	fetchChartDates();
+	$('#user-name').html(user.data.first_name);
+	$('body').show();
+	const qs = new URLSearchParams(location.search);
+	if (qs.get('path')) {
+		validFunctions.forEach(f => {
+			const match = qs.get('path').match(f.pathRegex);
+			if (match) changeView(f.name, match.length > 1 ? match[1] : '');
+		});
+	} else if (qs.get('state')) {
+		const [ stateFunction, stateArgs ] = qs.get('state').split(':');
+		const targetFunction = validFunctions.find(f => f.name === stateFunction);
+		if (targetFunction) targetFunction(...stateArgs.split(','));
 	}
+	if (location.search.includes('code=')) await spotify.getSpotifyToken(qs.get('code'));
 	$(window).on('resize', () => {
 		activeResizes++;
 		setTimeout(() => {
@@ -49,7 +82,7 @@ window.setCurrentView = (graph, graphFunction, graphArgs) => {
 
 window.changeView = (functionName, args = '') => {
 	const targetFunction = validFunctions.find(f => f.name === functionName);
-	if (targetFunction) targetFunction(...args.split(','));
+	if (targetFunction) targetFunction.func(...args.split(','));
 };
 
 const fetchChartDates = chartId => {
