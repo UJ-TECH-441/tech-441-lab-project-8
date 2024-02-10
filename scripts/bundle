@@ -1,4 +1,4 @@
 #!/bin/sh
 
-exec browserify "public/js/index.js" | uglifyjs --source-map -c > "public/js/bundle.js"
-exec browserify "public/js/login.js" | uglifyjs --source-map -c > "public/js/bundle-login.js"
+exec browserify "public/js/index.js" | uglifyjs --source-map "root='/js/bundle.js'" -c > "public/js/bundle.js"
+exec browserify "public/js/login.js" | uglifyjs --source-map "root='/js/bundle-login.js'" -c > "public/js/bundle-login.js"
