@@ -5,7 +5,10 @@ const getSongGraph = (songId, isResize) => {
 	return new Promise((resolve, reject) => {
 		try {
 			if (!songId) return resolve();
-			if (!isResize) clearTitles();
+			if (!isResize) {
+				clearTitles();
+				history.pushState(`getSongGraph:${songId}`, '', `/?state=getSongGraph:${songId}`);
+			}
 			fetch(`/songs/${songId}/graph`)
 			.then(res => util.processFetchResponse(res))
 			.then(res => {

@@ -3,6 +3,7 @@ const util = require('../util');
 module.exports.getTop100 = async chartDate => {
 	return new Promise((resolve, reject) => {
 		try {
+			history.pushState(`getTop100:${chartDate}`, '', `/?state=getTop100:${chartDate}`);
 			scroll({ top: 0 });
 			clearTitles(false);
 			fetch(`/charts/${chartDate}`)

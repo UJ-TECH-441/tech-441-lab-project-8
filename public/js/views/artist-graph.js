@@ -5,10 +5,13 @@ const getArtistGraph = (artistId, isResize) => {
 	return new Promise((resolve, reject) => {
 		try {
 			if (!artistId) return resolve();
-			clearTitles();
+			if (!isResize) {
+				clearTitles();
+				history.pushState(`getArtistGraph:${artistId}`, '', `/?state=getArtistGraph:${artistId}`);
+			}
 			fetch(`/artists/${artistId}/songs`)
 			.then(res => util.processFetchResponse(res))
-			.then(res => {
+			.then(async res => {
 				const json = res.data;
 				$('#title').html(`${window.viewHandler.hearts.heartIcon('a', json[0].artist_id, res.isFavorite)} ${json[0].artist_name}: Chart Performance`);
 				const subtitle = (json.length === 1 ? '' : `<div class="bold"><a class="bold" 
@@ -37,7 +40,9 @@ const getArtistGraph = (artistId, isResize) => {
 					click: (ctx, event) => window.viewHandler.getSongGraph(json[ctx.dataIndex].song_id)
 				}
 				window.viewHandler.hearts.setHeartMouseEvents();
-				if (!isResize) spotify.loadSpotifyArtist(json[0].artist_name, json[0].peak_week.substring(0, 4));
+				if (!isResize) {
+					spotify.loadSpotifyArtist(json[0].artist_name, json[0].peak_week.substring(0, 4));
+				}
 				resolve(window.displayGraph(config, getArtistGraph, [ artistId ]));
 			})
 			.catch(err => util.handleError(err) && reject());

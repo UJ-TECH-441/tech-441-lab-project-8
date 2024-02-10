@@ -8,6 +8,8 @@ let activeResizes = 0;
 let validFunctions;
 
 $(document).ready(async () => {
+	console.log(location.href);
+	history.replaceState('', '', document.location.href);
 	const user = await window.login.confirmLogin();
 	if (user) {
 		validFunctions = [ viewHandler.getArtistGraph, viewHandler.getSongGraph,
@@ -24,15 +26,24 @@ $(document).ready(async () => {
 		}
 		if (location.search.includes('code=')) await spotify.getSpotifyToken(qs.get('code'));
 	}
-	$(window).on('resize', () => {
-		activeResizes++;
-		setTimeout(() => {
-			activeResizes--;
-			if (activeResizes === 0 && currentView.graphFunction) {
-				currentView.graphFunction(currentView.graphArgs, true);
-			}
-		}, 500);
-	});
+
+});
+
+window.addEventListener('resize', event => {
+	activeResizes++;
+	setTimeout(() => {
+		activeResizes--;
+		if (activeResizes === 0 && currentView.graphFunction) {
+			currentView.graphFunction(currentView.graphArgs, true);
+		}
+	}, 500);
+});
+
+window.addEventListener('popstate', event => {
+	if (event.state) {
+		[ view, args ] = event.state.split(':');
+		changeView(view, args);
+	}
 });
 
 window.clearTitles = (hideSpotifyPlayer = true) => {

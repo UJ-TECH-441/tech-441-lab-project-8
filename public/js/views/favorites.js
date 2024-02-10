@@ -69,6 +69,7 @@ const sendHeartEvent = (type, id) => {
 const getFavorites = async () => {
 	return new Promise((resolve, reject) => {
 		try {
+			history.pushState(`getFavorites:`, '', '/?state=getFavorites:');
 			fetch(`/user/favorites`)
 			.then(res => util.processFetchResponse(res))
 			.then(data => {

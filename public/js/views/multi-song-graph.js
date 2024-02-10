@@ -5,7 +5,10 @@ const getMultiSongGraph = (artistId, isResize) => {
 	return new Promise((resolve, reject) => {
 		try {
 			if (!artistId) return resolve();
-			clearTitles(false);
+			if (!isResize) {
+				clearTitles(false);
+				history.pushState(`getMultiSongGraph:${artistId}`, '', `/?state=getMultiSongGraph:${artistId}`);
+			}
 			fetch(`/artists/${artistId}/songs/graph`)
 			.then(res => util.processFetchResponse(res))
 			.then(data => {
