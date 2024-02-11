@@ -86,6 +86,10 @@ button {
   font-size: 1.3rem;
 }
 
+.title select {
+  margin-top: 5px;
+}
+
 .subtitle {
   margin-top: 10px;
   text-align: center;
@@ -97,6 +101,18 @@ button {
 
 .error {
   color: #df0000;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.hand {
+  cursor: pointer;
+}
+
+.center {
+  text-align: center;
 }
 
 header {
@@ -118,4 +134,4 @@ header {
   width: 10rem;
 }
 
-/*# sourceMappingURL=data:application/json;charset=utf-8,%7B%22version%22:3,%22sourceRoot%22:%22%22,%22sources%22:%5B%22fonts.scss%22,%22main.scss%22,%22constants.scss%22,%22login.scss%22%5D,%22names%22:%5B%5D,%22mappings%22:%22AAAA;EACC;EACA;EACA;EACA;EACA;EACA;;AAGD;EACC;EACA;EACA;EACA;EACA;EACA;;AAGD;EACC;EACA;EACA;EACA;EACA;EACA;;ACpBD;EACC;;;AAGD;EACC;;;AAGD;EACC;;;AAGD;EACC;;;AAGD;EACC;;;AAGD;EACC,OCzBY;ED0BZ;;;AAGD;EACC;;;AAGD;EACC,kBClCY;EDmCZ,cCnCY;EDoCZ;EACA;EACA;;;AAGD;EACC,aChCkB;;;ADmCnB;EACC,aCnCmB;;;ADsCpB;EACC,aCxCkB;EDyClB;EACA,OCpDY;;;ADuDb;EACC;EACA;;;AAGD;EACC;;;AAGD;EACC;;;AAGD;EACC;EACA;;;AAGD;EACC;;;AAGD;EACC,OCxEW;;;ACFZ;EACC;;;AAGD;EACC;EACA;EACA;EACA;EACA;;AAEA;EACC;EACA;;AAGD;EACC%22,%22file%22:%22login.css%22%7D */
+/*# sourceMappingURL=data:application/json;charset=utf-8,%7B%22version%22:3,%22sourceRoot%22:%22%22,%22sources%22:%5B%22fonts.scss%22,%22main.scss%22,%22constants.scss%22,%22login.scss%22%5D,%22names%22:%5B%5D,%22mappings%22:%22AAAA;EACC;EACA;EACA;EACA;EACA;EACA;;AAGD;EACC;EACA;EACA;EACA;EACA;EACA;;AAGD;EACC;EACA;EACA;EACA;EACA;EACA;;ACpBD;EACC;;;AAGD;EACC;;;AAGD;EACC;;;AAGD;EACC;;;AAGD;EACC;;;AAGD;EACC,OCzBY;ED0BZ;;;AAGD;EACC;;;AAGD;EACC,kBClCY;EDmCZ,cCnCY;EDoCZ;EACA;EACA;;;AAGD;EACC,aChCkB;;;ADmCnB;EACC,aCnCmB;;;ADsCpB;EACC,aCxCkB;EDyClB;EACA,OCpDY;;;ADuDb;EACC;EACA;;;AAGD;EACC;;;AAGD;EACC;;;AAGD;EACC;;;AAGD;EACC;EACA;;;AAGD;EACC;;;AAGD;EACC,OC5EW;;;AD+EZ;EACC;;;AAGD;EACC;;;AAGD;EACC;;;AE1FD;EACC;;;AAGD;EACC;EACA;EACA;EACA;EACA;;AAEA;EACC;EACA;;AAGD;EACC%22,%22file%22:%22login.css%22%7D */

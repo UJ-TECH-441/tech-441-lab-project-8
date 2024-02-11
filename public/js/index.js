@@ -8,7 +8,6 @@ let activeResizes = 0;
 let validFunctions;
 
 $(document).ready(async () => {
-	console.log(location.href);
 	history.replaceState('', '', document.location.href);
 	const user = await window.login.confirmLogin();
 	if (user) {

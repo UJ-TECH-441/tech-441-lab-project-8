@@ -3,7 +3,7 @@
 	"version": "0.0.0",
 	"private": true,
 	"scripts": {
-		"start": "nodemon ./app"
+		"start": "nodemon ./app -- --no-warnings=ExperimentalWarning"
 	},
 	"dependencies": {
 		"bcrypt": "^5.1.1",
